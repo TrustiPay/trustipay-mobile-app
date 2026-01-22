@@ -1,13 +1,41 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React from "react"
+import {View,Text,Button} from "react-native"
 
-export default function HomeScreen() {
-  return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: "700" }}>TrustiPay</Text>
-      <Text style={{ marginTop: 10 }}>
-        Next: Offline Tx → Ledger → QR/Bluetooth/Wi-Fi Direct → Sync.
-      </Text>
-    </View>
-  );
+import {createTransaction} from "../ledger/createTransaction"
+import {savePending} from "../storage/pendingRepo"
+import {appendLedger} from "../ledger/appendLedger"
+
+export default function HomeScreen(){
+
+ async function createTx(){
+
+  const tx = await createTransaction(
+   "device_A",
+   "device_B",
+   100
+  )
+
+  await savePending(tx)
+
+  await appendLedger(tx)
+
+  console.log("TX:",tx)
+
+ }
+
+ return(
+
+  <View style={{padding:20}}>
+
+   <Text style={{fontSize:22}}>TrustiPay</Text>
+
+   <Button
+    title="Create Transaction"
+    onPress={createTx}
+   />
+
+  </View>
+
+ )
+
 }
